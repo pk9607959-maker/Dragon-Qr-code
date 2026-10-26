@@ -3,23 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { BottomNav } from './components/BottomNav';
-import { FormFields } from './components/FormFields';
-import { StylingPanel } from './components/StylingPanel';
-import { QrPreview } from './components/QrPreview';
+import { NavDrawer } from './components/NavDrawer';
+import { GeneratorWorkspace } from './components/GeneratorWorkspace';
 import { HistoryView } from './components/HistoryView';
 import { DonateView } from './components/DonateView';
 import { DragonPsychoView } from './components/DragonPsychoView';
+import { Footer } from './components/Footer';
+import { LegalModals } from './components/LegalModals';
 
 import { NavTab, QrStyleOptions, SavedQrRecord } from './types';
-import {
-  QrContentType,
-  QrFormData,
-  formatQrPayload,
-  validateQrFormData,
-} from './utils/qrPayload';
+import { QrContentType, QrFormData } from './utils/qrPayload';
 import {
   getAllHistory,
   saveHistoryEntry,
@@ -43,6 +38,7 @@ const DEFAULT_FORM: QrFormData = {
   type: 'url',
   label: '',
   url: 'https://dragonpsycho.com',
+  text: '',
   wifi: { ssid: '', security: 'WPA', password: '', hidden: false },
   email: { email: '', subject: '', body: '' },
   phone: '',
@@ -55,28 +51,32 @@ const DEFAULT_FORM: QrFormData = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [activeLegalModal, setActiveLegalModal] = useState<
+    'privacy' | 'terms' | 'about' | 'contact' | null
+  >(null);
+
+  // QR state
   const [selectedType, setSelectedType] = useState<QrContentType>('url');
   const [formData, setFormData] = useState<QrFormData>(DEFAULT_FORM);
   const [isDynamic, setIsDynamic] = useState<boolean>(false);
   const [styleOptions, setStyleOptions] = useState<QrStyleOptions>(DEFAULT_STYLE);
   const [historyRecords, setHistoryRecords] = useState<SavedQrRecord[]>([]);
 
-  // Load history on mount
+  // Load history from IndexedDB on startup
   useEffect(() => {
     getAllHistory().then((data) => {
       setHistoryRecords(data);
     });
   }, []);
 
-  // Update formData when type changes
   const handleSelectType = (type: QrContentType) => {
     setSelectedType(type);
     setFormData((prev) => ({
       ...prev,
       type,
     }));
-    // If not URL or Social, force static mode
-    if (type !== 'url' && type !== 'social') {
+    if (type !== 'url') {
       setIsDynamic(false);
     }
   };
@@ -91,22 +91,11 @@ export default function App() {
     setIsDynamic(false);
   };
 
-  // Compute validation and payload
-  const validation = useMemo(() => {
-    return validateQrFormData(formData);
-  }, [formData]);
-
-  const payload = useMemo(() => {
-    return formatQrPayload(formData);
-  }, [formData]);
-
-  // Save successful generation to history
+  // Save to IndexedDB history
   const handleSaveToHistory = async (previewDataUrl: string) => {
-    if (!validation.isValid) return;
-
     const newRecord: SavedQrRecord = {
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-      label: formData.label || `${formData.type.toUpperCase()} Code`,
+      label: formData.label || `${formData.type.toUpperCase()} QR`,
       contentType: formData.type,
       formData: { ...formData },
       styleOptions: { ...styleOptions },
@@ -152,51 +141,41 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#222222] flex flex-col font-sans selection:bg-neutral-900 selection:text-white">
-      {/* Top Application Header */}
-      <Header activeTab={activeTab} onNavigate={setActiveTab} />
+      {/* 1. HEADER with left hamburger menu and prominent DRAGONQR brand */}
+      <Header
+        activeTab={activeTab}
+        onNavigate={setActiveTab}
+        onOpenDrawer={() => setIsDrawerOpen(true)}
+        historyCount={historyRecords.length}
+      />
 
-      {/* Main Body with bottom padding to ensure bottom navigation never clips content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 pb-28">
-        {/* HOME VIEW: The QR Workspace */}
+      {/* Slide-over Navigation Drawer */}
+      <NavDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        activeTab={activeTab}
+        onNavigate={setActiveTab}
+        historyCount={historyRecords.length}
+        onOpenLegalModal={setActiveLegalModal}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {/* 2. MAIN GENERATOR WORKSPACE: Exact Hand-Drawn Two-Column Layout */}
         {activeTab === 'home' && (
-          <div className="space-y-6">
-
-
-            {/* Two-Column Grid on Desktop */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column: Form Fields & Styling Controls */}
-              <div className="lg:col-span-7 space-y-6">
-                <FormFields
-                  formData={formData}
-                  onChange={setFormData}
-                  onReset={handleResetForm}
-                  isDynamic={isDynamic}
-                  onToggleDynamic={setIsDynamic}
-                  onSelectType={handleSelectType}
-                  error={validation.isValid ? undefined : validation.error}
-                />
-
-                <StylingPanel
-                  options={styleOptions}
-                  onChange={setStyleOptions}
-                />
-              </div>
-
-              {/* Right Column: Live QR Preview & Export Controls */}
-              <div className="lg:col-span-5">
-                <QrPreview
-                  payload={payload}
-                  isValid={validation.isValid}
-                  validationError={validation.error}
-                  styleOptions={styleOptions}
-                  formData={formData}
-                  isDynamic={isDynamic}
-                  onDynamicCreated={handleDynamicCreated}
-                  onSaveToHistory={handleSaveToHistory}
-                />
-              </div>
-            </div>
-          </div>
+          <GeneratorWorkspace
+            formData={formData}
+            onChangeFormData={setFormData}
+            onResetForm={handleResetForm}
+            selectedType={selectedType}
+            onSelectType={handleSelectType}
+            isDynamic={isDynamic}
+            onToggleDynamic={setIsDynamic}
+            styleOptions={styleOptions}
+            onChangeStyleOptions={setStyleOptions}
+            onSaveToHistory={handleSaveToHistory}
+            onDynamicCreated={handleDynamicCreated}
+          />
         )}
 
         {/* DONATE VIEW */}
@@ -219,11 +198,13 @@ export default function App() {
         {activeTab === 'dragon-psycho' && <DragonPsychoView />}
       </main>
 
-      {/* Persistent Global Bottom Navigation */}
-      <BottomNav
-        activeTab={activeTab}
-        onNavigate={setActiveTab}
-        historyCount={historyRecords.length}
+      {/* 8. FOOTER with Owner Social Media Links */}
+      <Footer onOpenLegalModal={setActiveLegalModal} />
+
+      {/* Dedicated Legal & Support Modals */}
+      <LegalModals
+        activeModal={activeLegalModal}
+        onClose={() => setActiveLegalModal(null)}
       />
     </div>
   );
