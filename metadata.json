@@ -1,0 +1,6 @@
+{
+  "name": "Dragon Psycho QR Generator",
+  "description": "Minimal, professional static and dynamic QR code generator with live preview, custom styling, PNG/SVG exports, and privacy-focused redirects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
