@@ -10,11 +10,6 @@ import {
   History,
   Heart,
   User,
-  Shield,
-  FileText,
-  Info,
-  Mail,
-  ExternalLink,
   Youtube,
   Instagram,
   Facebook,
@@ -28,7 +23,7 @@ interface NavDrawerProps {
   activeTab: NavTab;
   onNavigate: (tab: NavTab) => void;
   historyCount: number;
-  onOpenLegalModal: (modal: 'privacy' | 'terms' | 'about' | 'contact') => void;
+  onOpenLegalModal?: (modal: 'privacy' | 'terms' | 'about' | 'contact') => void;
 }
 
 export const NavDrawer: React.FC<NavDrawerProps> = ({
@@ -37,18 +32,12 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
   activeTab,
   onNavigate,
   historyCount,
-  onOpenLegalModal,
 }) => {
   if (!isOpen) return null;
 
   const handleNav = (tab: NavTab) => {
     onNavigate(tab);
     onClose();
-  };
-
-  const handleLegal = (modal: 'privacy' | 'terms' | 'about' | 'contact') => {
-    onClose();
-    onOpenLegalModal(modal);
   };
 
   return (
@@ -85,7 +74,6 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
               <div className="text-[10px] text-neutral-400 font-mono">Dragon Psycho Engine</div>
             </div>
           </div>
-
           <button
             type="button"
             onClick={onClose}
@@ -166,49 +154,6 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
                 <User className="w-4 h-4" />
                 <span>Dragon Psycho</span>
               </div>
-            </button>
-          </div>
-
-          {/* Dragon Psycho Sub-Section */}
-          <div className="pt-4 border-t border-neutral-800 space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 px-3 mb-2">
-              Dragon Psycho Project
-            </div>
-
-            <button
-              type="button"
-              onClick={() => handleLegal('privacy')}
-              className="w-full flex items-center gap-3 px-3 py-2 text-xs text-neutral-300 hover:text-white hover:bg-neutral-800/60 rounded-lg transition-colors text-left"
-            >
-              <Shield className="w-3.5 h-3.5 text-neutral-400" />
-              <span>Privacy Policy</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleLegal('terms')}
-              className="w-full flex items-center gap-3 px-3 py-2 text-xs text-neutral-300 hover:text-white hover:bg-neutral-800/60 rounded-lg transition-colors text-left"
-            >
-              <FileText className="w-3.5 h-3.5 text-neutral-400" />
-              <span>Terms and Conditions</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleLegal('about')}
-              className="w-full flex items-center gap-3 px-3 py-2 text-xs text-neutral-300 hover:text-white hover:bg-neutral-800/60 rounded-lg transition-colors text-left"
-            >
-              <Info className="w-3.5 h-3.5 text-neutral-400" />
-              <span>About</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleLegal('contact')}
-              className="w-full flex items-center gap-3 px-3 py-2 text-xs text-neutral-300 hover:text-white hover:bg-neutral-800/60 rounded-lg transition-colors text-left"
-            >
-              <Mail className="w-3.5 h-3.5 text-neutral-400" />
-              <span>Contact</span>
             </button>
           </div>
 

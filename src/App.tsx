@@ -10,8 +10,12 @@ import { GeneratorWorkspace } from './components/GeneratorWorkspace';
 import { HistoryView } from './components/HistoryView';
 import { DonateView } from './components/DonateView';
 import { DragonPsychoView } from './components/DragonPsychoView';
+import { PrivacyPolicyPage } from './components/pages/PrivacyPolicyPage';
+import { TermsPage } from './components/pages/TermsPage';
+import { DisclaimerPage } from './components/pages/DisclaimerPage';
+import { AboutUsPage } from './components/pages/AboutUsPage';
+import { ContactUsPage } from './components/pages/ContactUsPage';
 import { Footer } from './components/Footer';
-import { LegalModals } from './components/LegalModals';
 
 import { NavTab, QrStyleOptions, SavedQrRecord } from './types';
 import { QrContentType, QrFormData } from './utils/qrPayload';
@@ -52,9 +56,6 @@ const DEFAULT_FORM: QrFormData = {
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeLegalModal, setActiveLegalModal] = useState<
-    'privacy' | 'terms' | 'about' | 'contact' | null
-  >(null);
 
   // QR state
   const [selectedType, setSelectedType] = useState<QrContentType>('url');
@@ -62,6 +63,32 @@ export default function App() {
   const [isDynamic, setIsDynamic] = useState<boolean>(false);
   const [styleOptions, setStyleOptions] = useState<QrStyleOptions>(DEFAULT_STYLE);
   const [historyRecords, setHistoryRecords] = useState<SavedQrRecord[]>([]);
+
+  // Synchronize URL hash with page state for true multi-page navigation feel
+  useEffect(() => {
+    const parseHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (hash === 'privacy') setActiveTab('privacy');
+      else if (hash === 'terms') setActiveTab('terms');
+      else if (hash === 'disclaimer') setActiveTab('disclaimer');
+      else if (hash === 'about-us' || hash === 'about') setActiveTab('about-us');
+      else if (hash === 'contact-us' || hash === 'contact') setActiveTab('contact-us');
+      else if (hash === 'dragon-psycho') setActiveTab('dragon-psycho');
+      else if (hash === 'history') setActiveTab('history');
+      else if (hash === 'donate') setActiveTab('donate');
+      else if (hash === 'home') setActiveTab('home');
+    };
+
+    parseHash();
+    window.addEventListener('hashchange', parseHash);
+    return () => window.removeEventListener('hashchange', parseHash);
+  }, []);
+
+  const handleNavigate = (tab: NavTab) => {
+    setActiveTab(tab);
+    window.location.hash = `#${tab}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Load history from IndexedDB on startup
   useEffect(() => {
@@ -118,8 +145,7 @@ export default function App() {
     setFormData(record.formData);
     setStyleOptions(record.styleOptions);
     setIsDynamic(record.isDynamic);
-    setActiveTab('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleNavigate('home');
   };
 
   const handleDeleteHistory = async (id: string) => {
@@ -144,7 +170,7 @@ export default function App() {
       {/* 1. HEADER with left hamburger menu and prominent DRAGONQR brand */}
       <Header
         activeTab={activeTab}
-        onNavigate={setActiveTab}
+        onNavigate={handleNavigate}
         onOpenDrawer={() => setIsDrawerOpen(true)}
         historyCount={historyRecords.length}
       />
@@ -154,9 +180,8 @@ export default function App() {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         activeTab={activeTab}
-        onNavigate={setActiveTab}
+        onNavigate={handleNavigate}
         historyCount={historyRecords.length}
-        onOpenLegalModal={setActiveLegalModal}
       />
 
       {/* Main Content Area */}
@@ -180,7 +205,7 @@ export default function App() {
 
         {/* DONATE VIEW */}
         {activeTab === 'donate' && (
-          <DonateView onBackToGenerator={() => setActiveTab('home')} />
+          <DonateView onBackToGenerator={() => handleNavigate('home')} />
         )}
 
         {/* HISTORY VIEW */}
@@ -194,18 +219,35 @@ export default function App() {
           />
         )}
 
-        {/* DRAGON PSYCHO VIEW */}
-        {activeTab === 'dragon-psycho' && <DragonPsychoView />}
+        {/* DRAGON PSYCHO DIRECTORY VIEW */}
+        {activeTab === 'dragon-psycho' && (
+          <DragonPsychoView onNavigate={handleNavigate} />
+        )}
+
+        {/* DEDICATED SEPARATE PAGES */}
+        {activeTab === 'privacy' && (
+          <PrivacyPolicyPage onNavigate={handleNavigate} />
+        )}
+
+        {activeTab === 'terms' && (
+          <TermsPage onNavigate={handleNavigate} />
+        )}
+
+        {activeTab === 'disclaimer' && (
+          <DisclaimerPage onNavigate={handleNavigate} />
+        )}
+
+        {activeTab === 'about-us' && (
+          <AboutUsPage onNavigate={handleNavigate} />
+        )}
+
+        {activeTab === 'contact-us' && (
+          <ContactUsPage onNavigate={handleNavigate} />
+        )}
       </main>
 
       {/* 8. FOOTER with Owner Social Media Links */}
-      <Footer onOpenLegalModal={setActiveLegalModal} />
-
-      {/* Dedicated Legal & Support Modals */}
-      <LegalModals
-        activeModal={activeLegalModal}
-        onClose={() => setActiveLegalModal(null)}
-      />
+      <Footer />
     </div>
   );
 }

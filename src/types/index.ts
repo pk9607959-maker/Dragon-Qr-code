@@ -45,4 +45,13 @@ export interface SavedQrRecord {
   createdAt: string;
 }
 
-export type NavTab = 'home' | 'donate' | 'history' | 'dragon-psycho';
+export type NavTab =
+  | 'home'
+  | 'donate'
+  | 'history'
+  | 'dragon-psycho'
+  | 'privacy'
+  | 'terms'
+  | 'disclaimer'
+  | 'about-us'
+  | 'contact-us';

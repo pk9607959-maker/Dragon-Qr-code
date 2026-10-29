@@ -3,24 +3,74 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Shield,
   FileText,
+  AlertTriangle,
   Info,
   Mail,
+  ArrowRight,
+  ArrowLeft,
+  Home,
   ExternalLink,
   Youtube,
   Instagram,
   Facebook,
   Github,
   CheckCircle,
-  X,
-  Code2,
 } from 'lucide-react';
+import { NavTab } from '../types';
 
-export const DragonPsychoView: React.FC = () => {
-  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
+interface DragonPsychoViewProps {
+  onNavigate: (tab: NavTab) => void;
+}
+
+export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }) => {
+  // The five dedicated pages requested by the user
+  const directoryLinks: {
+    number: string;
+    title: string;
+    tab: NavTab;
+    description: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      number: '1',
+      title: 'Privacy Policy',
+      tab: 'privacy',
+      description: 'Zero scan analytics guarantee, no IP tracking, and 100% device-local storage.',
+      icon: <Shield className="w-5 h-5 text-neutral-900" />,
+    },
+    {
+      number: '2',
+      title: 'Terms and Conditions',
+      tab: 'terms',
+      description: 'Acceptable use guidelines, prohibited payloads, and service responsibilities.',
+      icon: <FileText className="w-5 h-5 text-neutral-900" />,
+    },
+    {
+      number: '3',
+      title: 'Disclaimer',
+      tab: 'disclaimer',
+      description: 'Scanner hardware variances, mandatory pre-print testing, and third-party links.',
+      icon: <AlertTriangle className="w-5 h-5 text-neutral-900" />,
+    },
+    {
+      number: '4',
+      title: 'About Us',
+      tab: 'about-us',
+      description: 'The Dragon Psycho manifesto: anti-surveillance, pure utility, and monochrome design.',
+      icon: <Info className="w-5 h-5 text-neutral-900" />,
+    },
+    {
+      number: '5',
+      title: 'Contact Us',
+      tab: 'contact-us',
+      description: 'Direct developer support at contact@dragonpsycho.dev and inquiry form.',
+      icon: <Mail className="w-5 h-5 text-neutral-900" />,
+    },
+  ];
 
   const socialLinks = [
     {
@@ -54,7 +104,90 @@ export const DragonPsychoView: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-200">
+      {/* Top Breadcrumb & Return to Home */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-[#E3E3E3] shadow-xs">
+        <div className="flex items-center gap-2 text-xs text-neutral-600 font-mono">
+          <button
+            type="button"
+            onClick={() => onNavigate('home')}
+            className="hover:text-black flex items-center gap-1 font-semibold transition-colors"
+          >
+            <Home className="w-3.5 h-3.5" />
+            Home
+          </button>
+          <span>/</span>
+          <span className="text-black font-bold">Dragon Psycho</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onNavigate('home')}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-black hover:bg-neutral-800 text-xs font-semibold text-white transition-colors shadow-xs"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Generator
+        </button>
+      </div>
+
+      {/* 5 CLICKABLE LINKS NEAR THE TOP */}
+      <div className="bg-white border border-[#E3E3E3] rounded-2xl p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="border-b border-neutral-200 pb-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h2 className="text-lg font-black text-neutral-900 tracking-tight">
+                Dragon Psycho Directory
+              </h2>
+              <p className="text-xs text-neutral-500 mt-0.5">
+                Select any section below to open its dedicated full page:
+              </p>
+            </div>
+            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold">
+              5 Dedicated Pages
+            </span>
+          </div>
+        </div>
+
+        {/* The 5 Clickable Links List */}
+        <div className="space-y-2.5">
+          {directoryLinks.map((item) => (
+            <button
+              key={item.tab}
+              type="button"
+              onClick={() => onNavigate(item.tab)}
+              className="w-full group flex items-center justify-between p-4 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-left transition-all duration-150 shadow-xs hover:shadow-sm"
+            >
+              <div className="flex items-start sm:items-center gap-3.5">
+                {/* Number Badge */}
+                <div className="w-8 h-8 rounded-lg bg-white group-hover:bg-black group-hover:text-white border border-neutral-200 group-hover:border-black flex items-center justify-center font-mono font-black text-xs text-neutral-800 transition-colors shrink-0">
+                  {item.number}
+                </div>
+
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-neutral-900 group-hover:text-black">
+                      {item.title}
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-500 group-hover:text-neutral-700 line-clamp-1">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 pl-3">
+                <span className="hidden sm:inline text-xs font-semibold text-neutral-400 group-hover:text-black transition-colors font-mono">
+                  Open Page
+                </span>
+                <div className="w-7 h-7 rounded-md bg-white group-hover:bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 group-hover:text-black transition-colors">
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Brand Profile Banner */}
       <div className="bg-[#171717] text-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#2d2d2d]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
@@ -91,75 +224,6 @@ export const DragonPsychoView: React.FC = () => {
           <div>
             <div className="text-[10px] uppercase font-mono text-neutral-400">License</div>
             <div className="font-bold text-white mt-0.5">Open Source</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation to Supporting Sections */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Privacy Policy Card */}
-        <div className="bg-white border border-[#E3E3E3] rounded-xl p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="w-9 h-9 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-800 mb-3">
-              <Shield className="w-5 h-5" />
-            </div>
-            <h2 className="text-sm font-bold text-neutral-900 mb-1">Privacy Policy</h2>
-            <p className="text-xs text-neutral-600 leading-relaxed mb-4">
-              Learn how DRAGONQR protects your data: zero scan counting, no IP tracking, and 100% device-local history storage.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setActiveModal('privacy')}
-            className="w-full py-2 px-3 text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg transition-colors text-center"
-          >
-            Read Privacy Policy &rarr;
-          </button>
-        </div>
-
-        {/* Terms and Conditions Card */}
-        <div className="bg-white border border-[#E3E3E3] rounded-xl p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="w-9 h-9 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-800 mb-3">
-              <FileText className="w-5 h-5" />
-            </div>
-            <h2 className="text-sm font-bold text-neutral-900 mb-1">Terms and Conditions</h2>
-            <p className="text-xs text-neutral-600 leading-relaxed mb-4">
-              Terms of acceptable use, QR destination responsibilities, disclaimer of warranties, and service reliability limits.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setActiveModal('terms')}
-            className="w-full py-2 px-3 text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-lg transition-colors text-center"
-          >
-            Read Terms & Conditions &rarr;
-          </button>
-        </div>
-      </div>
-
-      {/* About & Contact Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#E3E3E3] rounded-xl p-5 shadow-xs">
-          <div className="w-9 h-9 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-800 mb-3">
-            <Info className="w-5 h-5" />
-          </div>
-          <h2 className="text-sm font-bold text-neutral-900 mb-1">About Dragon Psycho</h2>
-          <p className="text-xs text-neutral-600 leading-relaxed">
-            Dragon Psycho creates minimalist digital experiences and developer utilities focused on precision, privacy, and visual elegance. DRAGONQR is built to provide an uncompromised alternative to ad-cluttered commercial QR services.
-          </p>
-        </div>
-
-        <div className="bg-white border border-[#E3E3E3] rounded-xl p-5 shadow-xs">
-          <div className="w-9 h-9 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-800 mb-3">
-            <Mail className="w-5 h-5" />
-          </div>
-          <h2 className="text-sm font-bold text-neutral-900 mb-1">Contact & Inquiries</h2>
-          <p className="text-xs text-neutral-600 leading-relaxed mb-2">
-            For support questions, open-source feedback, or security inquiries, reach out through the social channels below or developer email:
-          </p>
-          <div className="text-xs font-mono bg-neutral-50 p-2 rounded border border-neutral-200 text-neutral-700">
-            contact@dragonpsycho.dev
           </div>
         </div>
       </div>
@@ -210,141 +274,6 @@ export const DragonPsychoView: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* DEDICATED PRIVACY POLICY MODAL */}
-      {activeModal === 'privacy' && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col border border-neutral-200 shadow-2xl overflow-hidden">
-            <div className="p-5 border-b border-neutral-200 flex items-center justify-between bg-neutral-50">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-neutral-900" />
-                <h2 className="text-sm font-bold text-neutral-900">DRAGONQR Privacy Policy</h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveModal(null)}
-                className="text-neutral-500 hover:text-black p-1"
-                aria-label="Close Privacy Modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 overflow-y-auto space-y-4 text-xs text-neutral-700 leading-relaxed">
-              <p className="font-semibold text-neutral-900">Effective Date: October 2026</p>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">1. Zero Scan Analytics Guarantee</h3>
-                <p>
-                  Dragon Psycho QR Generator does not monitor, record, analyze, or monetize QR code scans. We explicitly do not log scanning device models, IP addresses, geographical coordinates, user-agent headers, or timestamp history when a dynamic QR redirect is processed.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">2. Local Browser Storage</h3>
-                <p>
-                  Your generated QR codes and history are persisted locally on your device via IndexedDB and LocalStorage. This information is private to your browser profile. We never transmit sensitive credentials (such as Wi-Fi passwords or confidential text) to external databases merely to render your local history.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">3. Dynamic QR Destination Storage</h3>
-                <p>
-                  When you explicitly choose to create a Dynamic QR code, the destination URL and a cryptographically salted SHA-256 hash of your management token are securely stored in Supabase / our backend database. The plaintext management token is never retained on the server.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">4. Third-Party Services</h3>
-                <p>
-                  Voluntary donations are processed through Cashfree Payments under their strict compliance standards. No financial or credit card data is ever collected or stored by Dragon Psycho.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">5. Data Deletion</h3>
-                <p>
-                  You may clear your entire local browser history at any time with one click. Dynamic QR codes can be deactivated using your private management token.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setActiveModal(null)}
-                className="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-neutral-800"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* DEDICATED TERMS AND CONDITIONS MODAL */}
-      {activeModal === 'terms' && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col border border-neutral-200 shadow-2xl overflow-hidden">
-            <div className="p-5 border-b border-neutral-200 flex items-center justify-between bg-neutral-50">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-neutral-900" />
-                <h2 className="text-sm font-bold text-neutral-900">DRAGONQR Terms and Conditions</h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveModal(null)}
-                className="text-neutral-500 hover:text-black p-1"
-                aria-label="Close Terms Modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 overflow-y-auto space-y-4 text-xs text-neutral-700 leading-relaxed">
-              <p className="font-semibold text-neutral-900">Last Revised: October 2026</p>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">1. Acceptable Use</h3>
-                <p>
-                  Dragon Psycho QR Generator provides free static and dynamic QR code generation. You agree not to generate QR codes leading to phishing campaigns, malware dissemination, illegal material, scams, or fraudulent websites. We reserve the right to deactivate dynamic links that violate these terms.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">2. Content Responsibility</h3>
-                <p>
-                  You are solely responsible for the correctness and legal compliance of any content or URLs encoded in your generated QR codes. Always test scans on physical devices before mass printing.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">3. Management Token Custody</h3>
-                <p>
-                  Dynamic QR codes rely on a unique management token for destination edits. Because no user accounts are maintained, if you misplace or lose your management key, the destination cannot be modified.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-neutral-900 mb-1">4. Disclaimer of Warranty</h3>
-                <p>
-                  The service is provided "AS IS" without warranties of any kind. While high uptime is prioritized, we do not guarantee uninterrupted availability of redirect infrastructure.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setActiveModal(null)}
-                className="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-neutral-800"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
