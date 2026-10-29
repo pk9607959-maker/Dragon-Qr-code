@@ -47,7 +47,7 @@ export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }
       number: '2',
       title: 'Terms and Conditions',
       tab: 'terms',
-      description: 'Acceptable use guidelines, prohibited payloads, and service responsibilities.',
+      description: 'Binding service agreement, liability limitations, and governing law (Uttar Pradesh, India).',
       icon: <FileText className="w-5 h-5 text-neutral-900" />,
     },
     {
