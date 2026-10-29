@@ -168,7 +168,7 @@ export const AboutUsPage: React.FC<PageProps> = ({ onNavigate }) => {
           <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-3">
             Other Dragon Psycho Pages
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <button
               type="button"
               onClick={() => onNavigate('privacy')}
@@ -189,6 +189,13 @@ export const AboutUsPage: React.FC<PageProps> = ({ onNavigate }) => {
               className="p-2.5 rounded-lg border border-neutral-200 hover:border-black text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors text-center"
             >
               Disclaimer &rarr;
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('refund')}
+              className="p-2.5 rounded-lg border border-neutral-200 hover:border-black text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors text-center"
+            >
+              Refund Policy &rarr;
             </button>
             <button
               type="button"

@@ -54,4 +54,5 @@ export type NavTab =
   | 'terms'
   | 'disclaimer'
   | 'about-us'
-  | 'contact-us';
+  | 'contact-us'
+  | 'refund';

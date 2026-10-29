@@ -19,6 +19,7 @@ import {
   Facebook,
   Github,
   CheckCircle,
+  RotateCcw,
 } from 'lucide-react';
 import { NavTab } from '../types';
 
@@ -39,7 +40,7 @@ export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }
       number: '1',
       title: 'Privacy Policy',
       tab: 'privacy',
-      description: 'Zero scan analytics guarantee, no IP tracking, and 100% device-local storage.',
+      description: 'Official policies on data collection, cookies, SMS notices, and rights (Uttar Pradesh, India).',
       icon: <Shield className="w-5 h-5 text-neutral-900" />,
     },
     {
@@ -53,21 +54,28 @@ export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }
       number: '3',
       title: 'Disclaimer',
       tab: 'disclaimer',
-      description: 'Scanner hardware variances, mandatory pre-print testing, and third-party links.',
+      description: 'Official legal disclaimer, external links, fair use, and limitation of liability.',
       icon: <AlertTriangle className="w-5 h-5 text-neutral-900" />,
     },
     {
       number: '4',
+      title: 'Return and Refund Policy',
+      tab: 'refund',
+      description: '30-day cancellation rights, conditions for returns, reimbursement, and return address.',
+      icon: <RotateCcw className="w-5 h-5 text-neutral-900" />,
+    },
+    {
+      number: '5',
       title: 'About Us',
       tab: 'about-us',
       description: 'The Dragon Psycho manifesto: anti-surveillance, pure utility, and monochrome design.',
       icon: <Info className="w-5 h-5 text-neutral-900" />,
     },
     {
-      number: '5',
+      number: '6',
       title: 'Contact Us',
       tab: 'contact-us',
-      description: 'Direct developer support at contact@dragonpsycho.dev and inquiry form.',
+      description: 'Direct support at dragon3support@gmail.com and official inquiry form.',
       icon: <Mail className="w-5 h-5 text-neutral-900" />,
     },
   ];
@@ -143,7 +151,7 @@ export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }
               </p>
             </div>
             <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold">
-              5 Dedicated Pages
+              6 Dedicated Pages
             </span>
           </div>
         </div>

@@ -36,8 +36,8 @@ export const ContactUsPage: React.FC<PageProps> = ({ onNavigate }) => {
     if (!message.trim()) return;
 
     // Trigger user's mail client as well as displaying confirmation
-    const mailtoUrl = `mailto:contact@dragonpsycho.dev?subject=${encodeURIComponent(
-      subject || 'Inquiry regarding Dragon Psycho QR'
+    const mailtoUrl = `mailto:dragon3support@gmail.com?subject=${encodeURIComponent(
+      subject || 'Inquiry regarding Dragon QR'
     )}&body=${encodeURIComponent(
       `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
     )}`;
@@ -146,7 +146,7 @@ export const ContactUsPage: React.FC<PageProps> = ({ onNavigate }) => {
               </div>
               <h2 className="text-base font-bold text-neutral-900">Message Prepared</h2>
               <p className="text-xs text-neutral-600 max-w-sm mx-auto leading-relaxed">
-                Your email client was invoked with your inquiry to <span className="font-mono font-bold text-black">contact@dragonpsycho.dev</span>. If your client did not launch automatically, feel free to send an email directly.
+                Your email client was invoked with your inquiry to <span className="font-mono font-bold text-black">dragon3support@gmail.com</span>. If your client did not launch automatically, feel free to send an email directly.
               </p>
               <button
                 type="button"
@@ -222,7 +222,7 @@ export const ContactUsPage: React.FC<PageProps> = ({ onNavigate }) => {
                 Direct Email
               </div>
               <div className="text-sm font-mono font-bold text-white mt-1 break-all select-all bg-black/50 p-2.5 rounded-lg border border-neutral-800">
-                contact@dragonpsycho.dev
+                dragon3support@gmail.com
               </div>
             </div>
 
@@ -273,7 +273,7 @@ export const ContactUsPage: React.FC<PageProps> = ({ onNavigate }) => {
         <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-3">
           Other Dragon Psycho Pages
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <button
             type="button"
             onClick={() => onNavigate('privacy')}
@@ -294,6 +294,13 @@ export const ContactUsPage: React.FC<PageProps> = ({ onNavigate }) => {
             className="p-2.5 rounded-lg border border-neutral-200 hover:border-black text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors text-center"
           >
             Disclaimer &rarr;
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('refund')}
+            className="p-2.5 rounded-lg border border-neutral-200 hover:border-black text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors text-center"
+          >
+            Refund Policy &rarr;
           </button>
           <button
             type="button"

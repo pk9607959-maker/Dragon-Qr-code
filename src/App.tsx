@@ -15,6 +15,7 @@ import { TermsPage } from './components/pages/TermsPage';
 import { DisclaimerPage } from './components/pages/DisclaimerPage';
 import { AboutUsPage } from './components/pages/AboutUsPage';
 import { ContactUsPage } from './components/pages/ContactUsPage';
+import { RefundPolicyPage } from './components/pages/RefundPolicyPage';
 import { Footer } from './components/Footer';
 
 import { NavTab, QrStyleOptions, SavedQrRecord } from './types';
@@ -73,6 +74,7 @@ export default function App() {
       else if (hash === 'disclaimer') setActiveTab('disclaimer');
       else if (hash === 'about-us' || hash === 'about') setActiveTab('about-us');
       else if (hash === 'contact-us' || hash === 'contact') setActiveTab('contact-us');
+      else if (hash === 'refund' || hash === 'refunds' || hash === 'returns') setActiveTab('refund');
       else if (hash === 'dragon-psycho') setActiveTab('dragon-psycho');
       else if (hash === 'history') setActiveTab('history');
       else if (hash === 'donate') setActiveTab('donate');
@@ -243,6 +245,10 @@ export default function App() {
 
         {activeTab === 'contact-us' && (
           <ContactUsPage onNavigate={handleNavigate} />
+        )}
+
+        {activeTab === 'refund' && (
+          <RefundPolicyPage onNavigate={handleNavigate} />
         )}
       </main>
 
