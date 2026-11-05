@@ -17,6 +17,14 @@ import { AboutUsPage } from './components/pages/AboutUsPage';
 import { ContactUsPage } from './components/pages/ContactUsPage';
 import { RefundPolicyPage } from './components/pages/RefundPolicyPage';
 import { Footer } from './components/Footer';
+import { AuthModal } from './components/AuthModal';
+import { UserProfileModal } from './components/UserProfileModal';
+import { useAuth } from './context/AuthContext';
+import {
+  saveUserCloudQr,
+  getUserCloudHistory,
+  deleteUserCloudQr,
+} from './firebase/firestore';
 
 import { NavTab, QrStyleOptions, SavedQrRecord } from './types';
 import { QrContentType, QrFormData } from './utils/qrPayload';
@@ -57,6 +65,11 @@ const DEFAULT_FORM: QrFormData = {
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [defaultAuthMode, setDefaultAuthMode] = useState<'login' | 'signup'>('login');
+
+  const { user } = useAuth();
 
   // QR state
   const [selectedType, setSelectedType] = useState<QrContentType>('url');
@@ -64,6 +77,35 @@ export default function App() {
   const [isDynamic, setIsDynamic] = useState<boolean>(false);
   const [styleOptions, setStyleOptions] = useState<QrStyleOptions>(DEFAULT_STYLE);
   const [historyRecords, setHistoryRecords] = useState<SavedQrRecord[]>([]);
+
+  // Load history from IndexedDB on startup
+  useEffect(() => {
+    getAllHistory().then((data) => {
+      setHistoryRecords(data);
+    });
+  }, []);
+
+  // When user logs in or switches, synchronize cloud records with local records
+  useEffect(() => {
+    if (user) {
+      getUserCloudHistory(user.uid).then((cloudRecords) => {
+        if (cloudRecords && cloudRecords.length > 0) {
+          setHistoryRecords((prev) => {
+            const map = new Map<string, SavedQrRecord>();
+            cloudRecords.forEach((r) => map.set(r.id, { ...r, isSyncedToCloud: true }));
+            prev.forEach((r) => {
+              if (!map.has(r.id)) {
+                map.set(r.id, r);
+              }
+            });
+            return Array.from(map.values()).sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          });
+        }
+      });
+    }
+  }, [user]);
 
   // Synchronize URL hash with page state for true multi-page navigation feel
   useEffect(() => {
@@ -92,12 +134,14 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Load history from IndexedDB on startup
-  useEffect(() => {
-    getAllHistory().then((data) => {
-      setHistoryRecords(data);
-    });
-  }, []);
+  const handleOpenAuth = (mode: 'login' | 'signup' = 'login') => {
+    setDefaultAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const handleOpenProfile = () => {
+    setIsProfileModalOpen(true);
+  };
 
   const handleSelectType = (type: QrContentType) => {
     setSelectedType(type);
@@ -120,7 +164,7 @@ export default function App() {
     setIsDynamic(false);
   };
 
-  // Save to IndexedDB history
+  // Save to IndexedDB history and Firebase Cloud if logged in
   const handleSaveToHistory = async (previewDataUrl: string) => {
     const newRecord: SavedQrRecord = {
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
@@ -131,15 +175,34 @@ export default function App() {
       isDynamic,
       previewDataUrl,
       createdAt: new Date().toISOString(),
+      userId: user?.uid,
+      isSyncedToCloud: !!user,
     };
 
     await saveHistoryEntry(newRecord);
     setHistoryRecords((prev) => [newRecord, ...prev]);
+
+    if (user) {
+      saveUserCloudQr(user.uid, newRecord).catch((err) => {
+        console.warn('Cloud sync deferred:', err);
+      });
+    }
   };
 
   const handleDynamicCreated = async (record: SavedQrRecord) => {
-    await saveHistoryEntry(record);
-    setHistoryRecords((prev) => [record, ...prev]);
+    const enriched: SavedQrRecord = {
+      ...record,
+      userId: user?.uid,
+      isSyncedToCloud: !!user,
+    };
+    await saveHistoryEntry(enriched);
+    setHistoryRecords((prev) => [enriched, ...prev]);
+
+    if (user) {
+      saveUserCloudQr(user.uid, enriched).catch((err) => {
+        console.warn('Cloud sync deferred:', err);
+      });
+    }
   };
 
   const handleReopen = (record: SavedQrRecord) => {
@@ -153,6 +216,9 @@ export default function App() {
   const handleDeleteHistory = async (id: string) => {
     await deleteHistoryEntry(id);
     setHistoryRecords((prev) => prev.filter((r) => r.id !== id));
+    if (user) {
+      deleteUserCloudQr(user.uid, id).catch(() => {});
+    }
   };
 
   const handleClearAllHistory = async () => {
@@ -165,6 +231,9 @@ export default function App() {
     setHistoryRecords((prev) =>
       prev.map((r) => (r.id === updated.id ? updated : r))
     );
+    if (user) {
+      saveUserCloudQr(user.uid, updated).catch(() => {});
+    }
   };
 
   return (
@@ -175,6 +244,8 @@ export default function App() {
         onNavigate={handleNavigate}
         onOpenDrawer={() => setIsDrawerOpen(true)}
         historyCount={historyRecords.length}
+        onOpenAuth={() => handleOpenAuth('login')}
+        onOpenProfile={handleOpenProfile}
       />
 
       {/* Slide-over Navigation Drawer */}
@@ -184,6 +255,8 @@ export default function App() {
         activeTab={activeTab}
         onNavigate={handleNavigate}
         historyCount={historyRecords.length}
+        onOpenAuth={() => handleOpenAuth('login')}
+        onOpenProfile={handleOpenProfile}
       />
 
       {/* Main Content Area */}
@@ -218,6 +291,7 @@ export default function App() {
             onDelete={handleDeleteHistory}
             onClearAll={handleClearAllHistory}
             onUpdateRecord={handleUpdateRecord}
+            onOpenAuth={() => handleOpenAuth('login')}
           />
         )}
 
@@ -254,6 +328,20 @@ export default function App() {
 
       {/* 8. FOOTER with Owner Social Media Links */}
       <Footer />
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultMode={defaultAuthMode}
+      />
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        cloudRecordCount={historyRecords.filter((r) => r.isSyncedToCloud).length}
+      />
     </div>
   );
 }

@@ -43,6 +43,18 @@ export interface SavedQrRecord {
   managementToken?: string;
   previewDataUrl: string;
   createdAt: string;
+  userId?: string;
+  isSyncedToCloud?: boolean;
+}
+
+export interface UserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL?: string | null;
+  providerId: string;
+  createdAt: string;
+  lastLoginAt: string;
 }
 
 export type NavTab =
@@ -55,4 +67,5 @@ export type NavTab =
   | 'disclaimer'
   | 'about-us'
   | 'contact-us'
-  | 'refund';
+  | 'refund'
+  | 'profile';

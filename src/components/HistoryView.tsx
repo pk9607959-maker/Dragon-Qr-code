@@ -17,9 +17,13 @@ import {
   Edit2,
   X,
   FileCode,
+  Cloud,
+  HardDrive,
+  LogIn,
 } from 'lucide-react';
 import { SavedQrRecord } from '../types';
 import QRCodeStyling from 'qr-code-styling';
+import { useAuth } from '../context/AuthContext';
 
 interface HistoryViewProps {
   records: SavedQrRecord[];
@@ -27,6 +31,7 @@ interface HistoryViewProps {
   onDelete: (id: string) => void;
   onClearAll: () => void;
   onUpdateRecord: (updated: SavedQrRecord) => void;
+  onOpenAuth?: () => void;
 }
 
 export const HistoryView: React.FC<HistoryViewProps> = ({
@@ -35,7 +40,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
   onDelete,
   onClearAll,
   onUpdateRecord,
+  onOpenAuth,
 }) => {
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
@@ -156,7 +163,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
             Generated QR History
           </h1>
           <p className="text-xs text-neutral-600 mt-0.5">
-            Locally preserved in your browser. Reopen, edit destinations, or export anytime.
+            Preserve and organize your QR codes. Reopen, edit destinations, or export anytime.
           </p>
         </div>
 
@@ -171,6 +178,60 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
           </button>
         )}
       </div>
+
+      {/* Cloud Sync Status Banner */}
+      {user ? (
+        <div className="p-3.5 bg-neutral-900 text-white rounded-xl border border-neutral-800 flex items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-400 shrink-0">
+              <Cloud className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold flex items-center gap-2">
+                <span>Firebase Cloud Sync Active</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700">
+                  Online
+                </span>
+              </div>
+              <div className="text-[11px] text-neutral-400 font-mono truncate">
+                Logged in as {user.email || user.displayName || 'Dragon QR User'} &bull; QRs automatically synced
+              </div>
+            </div>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-xs font-mono font-bold text-emerald-400">
+              {records.filter((r) => r.isSyncedToCloud).length} / {records.length}
+            </span>
+            <span className="text-[10px] text-neutral-500 block font-mono">Cloud Synced</span>
+          </div>
+        </div>
+      ) : (
+        <div className="p-3.5 bg-white border border-[#E3E3E3] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 shrink-0 mt-0.5 sm:mt-0">
+              <Cloud className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-neutral-900">
+                Sync Your QR History with Firebase
+              </div>
+              <div className="text-[11px] text-neutral-500">
+                Sign in to back up your QR codes, access them across devices, and prevent loss when clearing browser cache.
+              </div>
+            </div>
+          </div>
+          {onOpenAuth && (
+            <button
+              type="button"
+              onClick={onOpenAuth}
+              className="px-3.5 py-1.5 rounded-lg bg-black hover:bg-neutral-800 text-white font-extrabold text-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 self-start sm:self-auto"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In to Sync</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Search and Filter */}
       {records.length > 0 && (
@@ -258,6 +319,17 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                     >
                       {item.isDynamic ? 'Dynamic' : 'Static'}
                     </span>
+                    {item.isSyncedToCloud ? (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                        <Cloud className="w-2.5 h-2.5" />
+                        <span>Cloud</span>
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded uppercase font-mono bg-neutral-100 text-neutral-500 flex items-center gap-1">
+                        <HardDrive className="w-2.5 h-2.5" />
+                        <span>Local</span>
+                      </span>
+                    )}
                   </div>
 
                   <div className="text-sm font-bold text-neutral-900 truncate">

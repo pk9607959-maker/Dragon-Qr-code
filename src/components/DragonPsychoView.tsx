@@ -196,46 +196,6 @@ export const DragonPsychoView: React.FC<DragonPsychoViewProps> = ({ onNavigate }
         </div>
       </div>
 
-      {/* Brand Profile Banner */}
-      <div className="bg-[#171717] text-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#2d2d2d]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center font-black text-2xl shadow-md border border-neutral-300 shrink-0">
-            DP
-          </div>
-
-          <div className="space-y-1 flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight">Dragon Psycho</h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 border border-neutral-700 uppercase">
-                Creator & Brand
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
-              Dragon Psycho QR Generator (DRAGONQR) was engineered to deliver clean, ad-free, high-fidelity QR tools with absolute zero scan tracking or user surveillance.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-neutral-800 text-xs">
-          <div>
-            <div className="text-[10px] uppercase font-mono text-neutral-400">Architecture</div>
-            <div className="font-bold text-white mt-0.5">React + TS + Vite</div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-mono text-neutral-400">Scan Analytics</div>
-            <div className="font-bold text-emerald-400 mt-0.5">Strictly 0% / None</div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-mono text-neutral-400">User Accounts</div>
-            <div className="font-bold text-white mt-0.5">Not Required</div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase font-mono text-neutral-400">License</div>
-            <div className="font-bold text-white mt-0.5">Open Source</div>
-          </div>
-        </div>
-      </div>
-
       {/* VISUALLY DISTINCT BLACK SQUARE-STYLE SOCIAL MEDIA PANEL */}
       <div className="bg-[#171717] border border-[#2d2d2d] rounded-2xl p-6 sm:p-7 shadow-xl text-white">
         <div className="flex items-center justify-between pb-4 border-b border-neutral-800 mb-5">

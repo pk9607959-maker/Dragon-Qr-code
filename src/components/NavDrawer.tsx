@@ -9,13 +9,17 @@ import {
   Home,
   History,
   Heart,
-  User,
+  User as UserIcon,
   Youtube,
   Instagram,
   Facebook,
   Github,
+  LogIn,
+  LogOut,
+  Cloud,
 } from 'lucide-react';
 import { NavTab } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface NavDrawerProps {
   isOpen: boolean;
@@ -23,7 +27,8 @@ interface NavDrawerProps {
   activeTab: NavTab;
   onNavigate: (tab: NavTab) => void;
   historyCount: number;
-  onOpenLegalModal?: (modal: 'privacy' | 'terms' | 'about' | 'contact') => void;
+  onOpenAuth: () => void;
+  onOpenProfile: () => void;
 }
 
 export const NavDrawer: React.FC<NavDrawerProps> = ({
@@ -32,7 +37,11 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
   activeTab,
   onNavigate,
   historyCount,
+  onOpenAuth,
+  onOpenProfile,
 }) => {
+  const { user, logOut } = useAuth();
+
   if (!isOpen) return null;
 
   const handleNav = (tab: NavTab) => {
@@ -82,6 +91,81 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* User Account Tile */}
+        <div className="p-4 border-b border-neutral-800 bg-neutral-900/50">
+          {user ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'User'}
+                    className="w-10 h-10 rounded-xl object-cover border border-neutral-700"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center font-bold text-white">
+                    {(user.displayName?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-black text-white truncate">
+                    {user.displayName || 'Dragon QR User'}
+                  </div>
+                  <div className="text-[10px] text-neutral-400 font-mono truncate">
+                    {user.email}
+                  </div>
+                  <div className="flex items-center gap-1 text-[9px] text-emerald-400 font-mono mt-0.5">
+                    <Cloud className="w-3 h-3" />
+                    <span>Cloud Sync Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenProfile();
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-black border border-neutral-700 hover:border-neutral-500 text-[11px] font-bold text-white text-center transition-colors"
+                >
+                  View Profile
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await logOut();
+                    onClose();
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-bold text-neutral-300 text-center transition-colors flex items-center justify-center gap-1"
+                >
+                  <LogOut className="w-3 h-3" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2 text-center">
+              <div className="text-xs font-bold text-neutral-200">Save QRs to Cloud</div>
+              <p className="text-[10px] text-neutral-400 leading-snug">
+                Sign in to sync your QR history across devices with Firebase.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenAuth();
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-white hover:bg-neutral-200 text-black font-extrabold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In / Create Account</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Navigation Items */}
@@ -151,7 +235,7 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <User className="w-4 h-4" />
+                <UserIcon className="w-4 h-4" />
                 <span>Dragon Psycho</span>
               </div>
             </button>
@@ -205,8 +289,8 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
 
         {/* Drawer Footer */}
         <div className="p-4 border-t border-[#2d2d2d] bg-black/40 text-[10px] text-neutral-500 font-mono flex items-center justify-between">
-          <span>Zero Scan Analytics</span>
-          <span>v1.0 Free</span>
+          <span>Firebase Auth</span>
+          <span>Zero Surveillance</span>
         </div>
       </div>
     </div>

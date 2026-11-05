@@ -1,0 +1,29 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "providerId": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" }
+      }
+    },
+    "UserQrRecord": {
+      "collection": "users/{userId}/qrHistory",
+      "fields": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "label": { "type": "string" },
+        "contentType": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "isDynamic": { "type": "boolean" },
+        "previewDataUrl": { "type": "string" },
+        "isSyncedToCloud": { "type": "boolean" }
+      }
+    }
+  }
+}
