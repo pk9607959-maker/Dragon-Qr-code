@@ -26,12 +26,6 @@ export const DonateView: React.FC<DonateViewProps> = ({ onBackToGenerator }) => 
       .finally(() => setLoading(false));
   }, []);
 
-  const handleDonateClick = () => {
-    if (cashfreeUrl) {
-      window.open(cashfreeUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="bg-white border border-[#E3E3E3] rounded-2xl p-6 sm:p-8 shadow-xs text-center">
@@ -85,14 +79,15 @@ export const DonateView: React.FC<DonateViewProps> = ({ onBackToGenerator }) => 
             {loading ? (
               <div className="text-xs text-neutral-400 py-2">Loading payment gateway details...</div>
             ) : cashfreeUrl ? (
-              <button
-                type="button"
-                onClick={handleDonateClick}
+              <a
+                href={cashfreeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto px-8 py-3 bg-white text-black font-extrabold text-sm rounded-xl hover:bg-neutral-100 transition-all shadow-md inline-flex items-center justify-center gap-2"
               >
                 <span>Proceed to Donate via Cashfree</span>
                 <ExternalLink className="w-4 h-4" />
-              </button>
+              </a>
             ) : (
               <div className="p-3 bg-neutral-800 rounded-lg text-xs text-neutral-400">
                 The official Cashfree donation URL will be supplied by the product owner before launch.

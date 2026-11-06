@@ -79,6 +79,8 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedToken, setCopiedToken] = useState(false);
+  const [copiedImage, setCopiedImage] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [lastGeneratedAt, setLastGeneratedAt] = useState<Date>(new Date());
 
@@ -476,20 +478,38 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
     }
   };
 
+  const handleCopyImage = async () => {
+    try {
+      const canvas = containerRef.current?.querySelector('canvas');
+      if (!canvas) return;
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob }),
+        ]);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 2000);
+      });
+    } catch (err) {
+      console.warn('Direct clipboard copy failed:', err);
+    }
+  };
+
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('Logo file must be under 2MB.');
+      setLogoError('Logo file size must be under 2MB.');
       return;
     }
 
     if (!['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'].includes(file.type)) {
-      alert('Please upload a PNG, JPG, WebP, or SVG logo.');
+      setLogoError('Please upload a valid PNG, JPG, WebP, or SVG logo.');
       return;
     }
 
+    setLogoError(null);
     const reader = new FileReader();
     reader.onload = (event) => {
       const result = event.target?.result as string;
@@ -1243,6 +1263,13 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
                 {/* LOGO */}
                 {customTab === 'logo' && (
                   <div className="space-y-3">
+                    {logoError && (
+                      <div className="p-2.5 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                        <span>{logoError}</span>
+                      </div>
+                    )}
+
                     {styleOptions.logoDataUrl ? (
                       <div className="flex items-center gap-3 p-3 bg-neutral-50 border border-neutral-200 rounded-xl">
                         <div className="w-12 h-12 rounded-lg bg-white border border-neutral-300 p-1 flex items-center justify-center shrink-0">
@@ -1518,13 +1545,13 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
               Download Options
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {/* Download PNG */}
               <button
                 type="button"
                 onClick={() => handleDownload('png')}
                 disabled={downloading}
-                className="py-2.5 px-2 bg-[#171717] hover:bg-black text-white text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40"
+                className="py-2.5 px-2 bg-[#171717] hover:bg-black text-white text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40 active:scale-[0.98]"
               >
                 <Download className="w-4 h-4" />
                 <span>PNG</span>
@@ -1535,7 +1562,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
                 type="button"
                 onClick={() => handleDownload('svg')}
                 disabled={downloading}
-                className="py-2.5 px-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-[#E3E3E3] text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40"
+                className="py-2.5 px-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-[#E3E3E3] text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40 active:scale-[0.98]"
               >
                 <FileCode className="w-4 h-4" />
                 <span>SVG</span>
@@ -1546,10 +1573,21 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({
                 type="button"
                 onClick={() => handleDownload('jpg')}
                 disabled={downloading}
-                className="py-2.5 px-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-[#E3E3E3] text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40"
+                className="py-2.5 px-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-[#E3E3E3] text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs disabled:opacity-40 active:scale-[0.98]"
               >
                 <FileImage className="w-4 h-4" />
                 <span>JPG</span>
+              </button>
+
+              {/* Copy QR to Clipboard */}
+              <button
+                type="button"
+                onClick={handleCopyImage}
+                className="py-2.5 px-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-[#E3E3E3] text-xs font-bold rounded-xl transition-all flex flex-col items-center justify-center gap-1 shadow-xs active:scale-[0.98]"
+                title="Copy QR image directly to clipboard"
+              >
+                {copiedImage ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-neutral-700" />}
+                <span>{copiedImage ? 'Copied!' : 'Copy'}</span>
               </button>
             </div>
 

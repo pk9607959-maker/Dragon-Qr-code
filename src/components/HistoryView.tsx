@@ -32,6 +32,7 @@ interface HistoryViewProps {
   onClearAll: () => void;
   onUpdateRecord: (updated: SavedQrRecord) => void;
   onOpenAuth?: () => void;
+  onNavigateHome?: () => void;
 }
 
 export const HistoryView: React.FC<HistoryViewProps> = ({
@@ -41,6 +42,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
   onClearAll,
   onUpdateRecord,
   onOpenAuth,
+  onNavigateHome,
 }) => {
   const { user } = useAuth();
   const [search, setSearch] = useState('');
@@ -270,14 +272,23 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 
       {/* History List */}
       {records.length === 0 ? (
-        <div className="bg-white border border-[#E3E3E3] rounded-2xl p-12 text-center max-w-md mx-auto">
+        <div className="bg-white border border-[#E3E3E3] rounded-2xl p-12 text-center max-w-md mx-auto shadow-xs">
           <div className="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-3 text-neutral-400">
             <History className="w-6 h-6" />
           </div>
           <h2 className="text-sm font-bold text-neutral-800 mb-1">No Saved QR Codes Yet</h2>
-          <p className="text-xs text-neutral-500 mb-4">
+          <p className="text-xs text-neutral-500 mb-5 leading-relaxed">
             Every QR code you generate or download is saved here in your browser for easy re-export and editing.
           </p>
+          {onNavigateHome && (
+            <button
+              type="button"
+              onClick={onNavigateHome}
+              className="px-4 py-2 bg-[#171717] hover:bg-black text-white text-xs font-bold rounded-xl transition-all shadow-xs"
+            >
+              Generate Your First QR
+            </button>
+          )}
         </div>
       ) : filteredRecords.length === 0 ? (
         <div className="bg-white border border-[#E3E3E3] rounded-xl p-8 text-center text-xs text-neutral-500">

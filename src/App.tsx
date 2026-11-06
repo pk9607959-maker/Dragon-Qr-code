@@ -237,7 +237,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-[#222222] flex flex-col font-sans selection:bg-neutral-900 selection:text-white">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] flex flex-col font-sans selection:bg-neutral-900 selection:text-white">
       {/* 1. HEADER with left hamburger menu and prominent DRAGONQR brand */}
       <Header
         activeTab={activeTab}
@@ -292,6 +292,7 @@ export default function App() {
             onClearAll={handleClearAllHistory}
             onUpdateRecord={handleUpdateRecord}
             onOpenAuth={() => handleOpenAuth('login')}
+            onNavigateHome={() => handleNavigate('home')}
           />
         )}
 
