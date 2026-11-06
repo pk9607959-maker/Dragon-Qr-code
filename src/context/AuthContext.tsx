@@ -196,7 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         err.code === 'auth/invalid-provider-id'
       ) {
         const message =
-          'Apple Sign-In is not yet enabled in this Firebase Project. To enable Apple login, open the Firebase Console (dragon-qr-56983) > Authentication > Sign-in method, click "Add new provider" > Apple, and provide your Apple Developer Service ID and Team credentials.';
+          'Apple Sign-In is not currently enabled for this application. Please sign in with Google or Email.';
         setAuthError(message);
         throw new Error(message);
       }
@@ -288,7 +288,7 @@ function formatFirebaseError(err: any): string {
     case 'auth/weak-password':
       return 'Password is too weak. Please use at least 6 characters.';
     case 'auth/operation-not-allowed':
-      return 'This sign-in method is not enabled in your Firebase Console. Please enable it in Authentication > Sign-in method.';
+      return 'This sign-in method is currently disabled. Please sign in with Google or Email.';
     case 'auth/popup-blocked':
       return 'Popup was blocked by your browser. Please allow popups or use redirect.';
     case 'auth/popup-closed-by-user':

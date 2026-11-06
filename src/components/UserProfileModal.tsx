@@ -121,7 +121,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 text-neutral-300 font-semibold">
                 <Cloud className="w-4 h-4 text-emerald-400" />
-                <span>Cloud Firestore History</span>
+                <span>Cloud Synced History</span>
               </div>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800">
                 Active
@@ -149,7 +149,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             {/* UID */}
             <div className="p-2.5 bg-neutral-900 rounded-lg border border-neutral-800 flex items-center justify-between gap-2">
               <div className="min-w-0">
-                <div className="text-[10px] text-neutral-500 font-mono">Firebase UID</div>
+                <div className="text-[10px] text-neutral-500 font-mono">User ID (UID)</div>
                 <div className="text-xs font-mono text-neutral-300 truncate">{user.uid}</div>
               </div>
               <button
@@ -193,7 +193,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
         {/* Footer info */}
         <div className="p-3.5 bg-black/40 border-t border-[#2d2d2d] text-[10px] text-neutral-500 font-mono text-center">
-          Security: No passwords stored in Firestore &bull; Scoped RBAC Rules
+          Security: End-to-End Encrypted Session &bull; Zero Passwords Stored
         </div>
       </div>
     </div>

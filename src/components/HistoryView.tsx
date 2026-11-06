@@ -188,13 +188,13 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
             </div>
             <div className="min-w-0">
               <div className="text-xs font-bold flex items-center gap-2">
-                <span>Firebase Cloud Sync Active</span>
+                <span>Cloud Sync Active</span>
                 <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700">
                   Online
                 </span>
               </div>
               <div className="text-[11px] text-neutral-400 font-mono truncate">
-                Logged in as {user.email || user.displayName || 'Dragon QR User'} &bull; QRs automatically synced
+                Logged in as {user.email || user.displayName || 'Dragon QR User'} &bull; QRs automatically backed up
               </div>
             </div>
           </div>
@@ -213,7 +213,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
             </div>
             <div>
               <div className="text-xs font-bold text-neutral-900">
-                Sync Your QR History with Firebase
+                Sync Your QR History Across Devices
               </div>
               <div className="text-[11px] text-neutral-500">
                 Sign in to back up your QR codes, access them across devices, and prevent loss when clearing browser cache.

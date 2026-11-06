@@ -10,14 +10,14 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 
 // Exact Firebase Web Configuration provided by user
 export const firebaseConfig = {
-  apiKey: "AIzaSyDK6mzhMpRMhnruOv1y_bUcrz-hMf-SaAE",
-  authDomain: "dragon-qr-56983.firebaseapp.com",
-  databaseURL: "https://dragon-qr-56983-default-rtdb.firebaseio.com",
-  projectId: "dragon-qr-56983",
-  storageBucket: "dragon-qr-56983.firebasestorage.app",
-  messagingSenderId: "615361676795",
-  appId: "1:615361676795:web:f37d071ff161ccc6ecb75e",
-  measurementId: "G-RRBG5K7FH3"
+  apiKey: "AIzaSyDredW8nk6PQEsDstkvs0ZITXofcZqTHsY",
+  authDomain: "dragon-qr-code.firebaseapp.com",
+  databaseURL: "https://dragon-qr-code-default-rtdb.firebaseio.com",
+  projectId: "dragon-qr-code",
+  storageBucket: "dragon-qr-code.firebasestorage.app",
+  messagingSenderId: "971001900600",
+  appId: "1:971001900600:web:26fca9c5d50a6aeff1c0cd",
+  measurementId: "G-Q67VMQYXVB"
 };
 
 // Initialize Firebase modular SDK only once

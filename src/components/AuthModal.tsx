@@ -187,7 +187,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
             <div>
               <div className="font-extrabold text-sm tracking-wider">Dragon QR</div>
-              <div className="text-[10px] text-neutral-400 font-mono">Firebase Authentication</div>
+              <div className="text-[10px] text-neutral-400 font-mono">Account Access</div>
             </div>
           </div>
 
@@ -500,7 +500,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-3.5">
                   <p className="text-xs text-neutral-400 leading-relaxed">
-                    Enter your email address and Firebase will send you a password reset link.
+                    Enter your email address and we will send you a password reset link.
                   </p>
                   <div>
                     <label className="block text-xs font-bold text-neutral-300 mb-1">
@@ -538,7 +538,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Footer info */}
         <div className="p-4 bg-black/40 border-t border-[#2d2d2d] text-[10px] text-neutral-400 flex items-center justify-between font-mono">
-          <span>Encrypted Firebase Auth</span>
+          <span>End-to-End Encrypted</span>
           <span>Zero Surveillance</span>
         </div>
       </div>

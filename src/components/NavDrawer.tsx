@@ -151,7 +151,7 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
             <div className="space-y-2 text-center">
               <div className="text-xs font-bold text-neutral-200">Save QRs to Cloud</div>
               <p className="text-[10px] text-neutral-400 leading-snug">
-                Sign in to sync your QR history across devices with Firebase.
+                Sign in to sync your QR history across devices automatically.
               </p>
               <button
                 type="button"
@@ -289,7 +289,7 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
 
         {/* Drawer Footer */}
         <div className="p-4 border-t border-[#2d2d2d] bg-black/40 text-[10px] text-neutral-500 font-mono flex items-center justify-between">
-          <span>Firebase Auth</span>
+          <span>Secure Cloud Auth</span>
           <span>Zero Surveillance</span>
         </div>
       </div>
